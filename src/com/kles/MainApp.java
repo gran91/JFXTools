@@ -104,10 +104,10 @@ public class MainApp extends Application {
     private void loadSkins() {
         listSkin.put("CASPIAN", STYLESHEET_CASPIAN);
         listSkin.put("MODENA", STYLESHEET_MODENA);
-        listSkin.put("DarkTheme", "com/kles/css/DarkTheme.css");
-        listSkin.put("Windows 7", "com/kles/css/Windows7.css");
-        listSkin.put("JMetroDarkTheme", "com/kles/css/JMetroDarkTheme.css");
-        listSkin.put("JMetroLightTheme", "com/kles/css/JMetroLightTheme.css");
+//        listSkin.put("DarkTheme", "com/kles/css/DarkTheme.css");
+//        listSkin.put("Windows 7", "com/kles/css/Windows7.css");
+//        listSkin.put("JMetroDarkTheme", "com/kles/css/JMetroDarkTheme.css");
+//        listSkin.put("JMetroLightTheme", "com/kles/css/JMetroLightTheme.css");
     }
 
     public void clearData() {
