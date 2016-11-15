@@ -17,7 +17,7 @@ import javafx.stage.WindowEvent;
 
 /**
  *
- * @author in-sideFX
+ * @author JCHAUT
  */
 public class UndecoratorController {
 
