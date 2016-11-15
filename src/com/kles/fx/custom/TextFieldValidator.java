@@ -48,6 +48,13 @@ public class TextFieldValidator {
         configureTextFieldBinding(binding, textField, message, messages, other);
         return binding.and(other.not());
     }
+    
+    public static BooleanBinding emptyTextFieldBindingAndOther(TextField textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
+        BooleanBinding binding = Bindings.createBooleanBinding(()
+                -> textField.getText().trim().isEmpty(), textField.textProperty());
+        configureTextFieldBinding(binding, textField, message, messages, other);
+        return binding.and(other.not());
+    }
 
     public static BooleanBinding emptyTextFieldBinding(TextField textField, String message, Map<BooleanBinding, String> messages) {
         BooleanBinding binding = Bindings.createBooleanBinding(()

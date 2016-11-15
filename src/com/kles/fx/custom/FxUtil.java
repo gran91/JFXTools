@@ -1,5 +1,6 @@
 package com.kles.fx.custom;
 
+import com.kles.MainApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,6 +27,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import com.kles.view.util.ProgressDialogController;
+import javafx.scene.Node;
 import resources.Resource;
 
 /**
@@ -37,6 +39,20 @@ public class FxUtil {
     public enum AutoCompleteMode {
 
         STARTS_WITH, CONTAINING,;
+    }
+
+    public static Stage showInDialog(Node node, String title) {
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle(title);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.getIcons().add(Resource.LOGO_ICON_32);
+        StackPane stack = new StackPane(node);
+        Scene scene = new Scene(stack);
+        scene.getStylesheets().add(MainApp.class.getResource("application.css").toExternalForm());
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+        return dialogStage;
+
     }
 
     public static <T> void autoCompleteComboBox(ComboBox<T> comboBox, AutoCompleteMode mode) {
@@ -134,7 +150,7 @@ public class FxUtil {
             }
         }));
     }
-    
+
     public static <S> void addAutoScroll(final TableView<S> view) {
         if (view == null) {
             throw new NullPointerException();

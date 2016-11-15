@@ -123,7 +123,7 @@ public class MainApp extends Application {
         if (filePath != null) {
             return new File(filePath);
         } else {
-            Path p = Paths.get("data");
+            Path p = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+Resource.TITLE);
             System.out.println(p.toFile().getAbsolutePath());
             if (p.toFile().exists() && p.toFile().isDirectory()) {
 
@@ -359,6 +359,8 @@ public class MainApp extends Application {
         this.trayIcon = trayIcon;
     }
 
+    
+    
     public static void main(String[] args) {
         launch(args);
     }
