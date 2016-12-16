@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import org.controlsfx.control.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import de.jensd.fx.glyphs.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kles.view.util.CheckListViewManageController">
+   <children>
+      <Label fx:id="title" layoutX="150.0" layoutY="16.0" text="%process.typem3Title" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="label" layoutX="14.0" layoutY="66.0" text="%process.typem3" />
+      <CheckListView fx:id="list" layoutX="146.0" layoutY="66.0" prefHeight="200.0" prefWidth="225.0" />
+      <Button fx:id="bSelect" layoutX="215.0" layoutY="271.0" mnemonicParsing="false" onAction="#listChecker">
+         <graphic>
+            <ImageView fitHeight="21.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@/resources/images/select.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="bUnselect" layoutX="282.0" layoutY="271.0" mnemonicParsing="false" onAction="#listChecker" prefHeight="31.0" prefWidth="38.0">
+         <graphic>
+            <ImageView fitHeight="21.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@/resources/images/unselect.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <ProgressIndicator fx:id="indicator" layoutX="342.0" layoutY="14.0" prefHeight="31.0" prefWidth="37.0" />
+   </children>
+</AnchorPane>

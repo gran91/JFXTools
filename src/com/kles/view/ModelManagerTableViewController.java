@@ -32,6 +32,7 @@ public abstract class ModelManagerTableViewController extends AbstractModelManag
     @FXML
     private void initialize() {
         table.setPlaceholder(new Text(MainApp.resourceMessage.getString("main.nodata")));
+        resourceBundle = MainApp.resourceMessage;
 //        TableViewUtils.addCustomTableMenu(table);
         //TableViewUtils.addHeaderFilter(table);
         loadColumnTable();
@@ -49,7 +50,7 @@ public abstract class ModelManagerTableViewController extends AbstractModelManag
     @Override
     public void setMainApp(MainApp mainApp) {
         super.setMainApp(mainApp);
-        setData(mainApp.getDataMap().get(datamodelname)==null ? FXCollections.observableArrayList() : mainApp.getDataMap().get(datamodelname));
+        setData(mainApp.getDataMap().get(datamodelname).getList() == null ? FXCollections.observableArrayList() : mainApp.getDataMap().get(datamodelname).getList());
     }
 
     @Override
@@ -58,17 +59,17 @@ public abstract class ModelManagerTableViewController extends AbstractModelManag
         table.setItems(this.listData);
     }
 
-     @FXML
+    @FXML
     @Override
     public void handleNew() {
         newInstance();
-         datamodel.setParent(parentmodel);
-        boolean okClicked = mainApp.showDataModelEditDialog(datamodel);
+        datamodel.setParent(parentmodel);
+        boolean okClicked = mainApp.showDataModelEditDialog(datamodel, resourceBundle);
         if (okClicked) {
             listData.add(datamodel);
         }
     }
-    
+
     /**
      * Called when the user clicks on the delete button.
      */
@@ -108,7 +109,7 @@ public abstract class ModelManagerTableViewController extends AbstractModelManag
     public ContextMenu getMenu() {
         return menu;
     }
-    
+
     class PasswordLabelCell extends TableCell<AbstractDataModel, String> {
 
         private final Label label;

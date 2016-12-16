@@ -2,6 +2,8 @@ package com.kles;
 
 import com.kles.fx.custom.DigitalClock;
 import com.kles.fx.custom.FxUtil;
+import com.kles.jaxb.JAXBObservableList;
+import com.kles.jaxb.Wrapper;
 import com.kles.model.AbstractDataModel;
 import com.kles.model.Language;
 import com.kles.tray.SystemTray;
@@ -14,9 +16,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -34,7 +40,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.apache.commons.io.FilenameUtils;
 import resources.Resource;
 
 public class MainApp extends Application {
@@ -47,11 +56,12 @@ public class MainApp extends Application {
     public final StringProperty dirData = new SimpleStringProperty();
     public static final String configFileName = "config";
     public static ResourceBundle resourceMessage;
+    protected ResourceBundle resourceBundle;
     public static String SKIN = "skin";
     public static String LANGUAGE = "lang";
     public static final ObservableList<Language> listLanguage = FXCollections.observableArrayList();
-    public Preferences prefs = Preferences.userRoot().node("3KLES_" + Resource.TITLE);
-    private HashMap<String, ObservableList> dataMap;
+    public Preferences prefs;
+    private HashMap<String, JAXBObservableList> dataMap;
     private final DigitalClock clock = new DigitalClock(DigitalClock.CLOCK);
     private final LinkedHashMap<String, String> listSkin = new LinkedHashMap<>();
     public static final Image LOGO_IMAGE = new Image(MainApp.class.getResourceAsStream("/resources/images/logo.png"));
@@ -61,11 +71,13 @@ public class MainApp extends Application {
      */
     public MainApp() {
         clock.start();
-        if (prefs.get(LANGUAGE, null) == null) {
-            prefs.put(LANGUAGE, Locale.getDefault().toString());
-        } else {
-            Locale.setDefault(new Locale(prefs.get(LANGUAGE, null).split("_")[0], prefs.get(LANGUAGE, null).split("_")[1]));
-        }
+        prefs = Preferences.userRoot().node("3KLES_" + Resource.TITLE);
+        initPrefs();
+        initApp();
+        Application.setUserAgentStylesheet(prefs.get(SKIN, null));
+    }
+
+    protected void initApp() {
         locale = Locale.getDefault();
         resourceMessage = ResourceBundle.getBundle("resources/language", Locale.getDefault());
         dataMap = new HashMap();
@@ -73,7 +85,14 @@ public class MainApp extends Application {
         if (prefs.get(SKIN, null) == null) {
             prefs.put(SKIN, STYLESHEET_MODENA);
         }
-        Application.setUserAgentStylesheet(prefs.get(SKIN, null));
+    }
+
+    public void initPrefs() {
+        if (prefs.get(LANGUAGE, null) == null) {
+            prefs.put(LANGUAGE, Locale.getDefault().toString());
+        } else {
+            Locale.setDefault(new Locale(prefs.get(LANGUAGE, null).split("_")[0], prefs.get(LANGUAGE, null).split("_")[1]));
+        }
     }
 
     public static ObservableList<Language> loadLanguages() {
@@ -104,6 +123,7 @@ public class MainApp extends Application {
     private void loadSkins() {
         listSkin.put("CASPIAN", STYLESHEET_CASPIAN);
         listSkin.put("MODENA", STYLESHEET_MODENA);
+        listSkin.put("MATERIAL", "com/kles/css/material-fx-v0_3.css");
 //        listSkin.put("DarkTheme", "com/kles/css/DarkTheme.css");
 //        listSkin.put("Windows 7", "com/kles/css/Windows7.css");
 //        listSkin.put("JMetroDarkTheme", "com/kles/css/JMetroDarkTheme.css");
@@ -114,8 +134,12 @@ public class MainApp extends Application {
         dataMap.clear();
     }
 
-    public void addToDataMap(String name, ObservableList data) {
+    public void addToDataMap(String name, JAXBObservableList data) {
         dataMap.put(name, data);
+    }
+
+    public void addToDataMap(String name, ObservableList data, Class... type) {
+        dataMap.put(name, new JAXBObservableList(data, type));
     }
 
     public File getDataDirectoryPath() {
@@ -123,7 +147,7 @@ public class MainApp extends Application {
         if (filePath != null) {
             return new File(filePath);
         } else {
-            Path p = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+Resource.TITLE);
+            Path p = Paths.get(System.getProperty("user.dir") + System.getProperty("file.separator") + Resource.TITLE);
             System.out.println(p.toFile().getAbsolutePath());
             if (p.toFile().exists() && p.toFile().isDirectory()) {
 
@@ -145,12 +169,11 @@ public class MainApp extends Application {
     }
 
     public void loadDataDirectory(File directory) {
-        JAXBContext context;
-        Unmarshaller um;
         try {
             if (directory.exists() && directory.isDirectory()) {
                 File[] listFile = directory.listFiles();
                 for (File f : listFile) {
+                    loadData(f);
                 }
             }
             setRegistryFilePath(directory);
@@ -159,8 +182,49 @@ public class MainApp extends Application {
         }
     }
 
-    public void saveDataToFile(File file) {
+    protected void loadData(File f) throws ClassNotFoundException {
+        Class c = Class.forName("com.kles.model." + FilenameUtils.removeExtension(f.getName()));
+        dataMap.remove(FilenameUtils.removeExtension(f.getName()));
+        ObservableList temp = FXCollections.observableArrayList();
+        JAXBContext jc;
+        List list = null;
         try {
+            jc = JAXBContext.newInstance(Wrapper.class, c);
+            Unmarshaller unMarshaller = jc.createUnmarshaller();
+            list = com.kles.jaxb.JAXBUtil.unmarshalList(unMarshaller, c, f.getAbsolutePath());
+            if (list != null) {
+                temp.addAll(list);
+            }
+        } catch (JAXBException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
+    }
+
+    public void saveDataToFile(File file) throws ClassNotFoundException {
+        try {
+            dataMap.entrySet().forEach((Map.Entry<String, JAXBObservableList> t) -> {
+                if (t.getValue().getList().size() > 0) {
+                    try {
+                        Class c = Class.forName("com.kles.model." + t.getKey());
+                        JAXBContext jc = JAXBContext.newInstance(Wrapper.class, c);
+                        Marshaller marshaller = jc.createMarshaller();
+                        File f = new File(file.getAbsolutePath() + System.getProperty("file.separator") + t.getKey() + ".xml");
+                        com.kles.jaxb.JAXBUtil.marshalList(marshaller, t.getValue().getList(), t.getKey() + "s", f);
+//                    AbstractWrapper wrapper = new AbstractWrapper();
+//                    wrapper.setData(t.getValue().getList());
+//                    try {
+//                        com.kles.jaxb.JAXBUtil.convertToFile(wrapper, new File(file.getAbsoluteFile() + System.getProperty("file.separator") + t.getKey() + ".xml"), AbstractWrapper.class);
+//                    } catch (JAXBException ex) {
+//                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+                    } catch (JAXBException ex) {
+                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
             setRegistryFilePath(file);
         } catch (Exception e) {
             FxUtil.showAlert(Alert.AlertType.ERROR, "Error", "Could not save data to file:\n" + file.getPath(), e.getLocalizedMessage());
@@ -187,7 +251,7 @@ public class MainApp extends Application {
             } else {
                 loader.setResources(rb);
             }
-            loader.setLocation(MainApp.class.getResource("view/" + model.datamodelName() + "EditDialog.fxml"));
+            loader.setLocation(MainApp.class.getResource("/com/kles/view/" + model.datamodelName() + "EditDialog.fxml"));
             Parent page = loader.load();
 
             Stage dialogStage = new Stage();
@@ -236,14 +300,18 @@ public class MainApp extends Application {
     }
 
     public AbstractDataModelEditController showDataModelEditDialogStage(AbstractDataModel model, Window parent) {
+        return showDataModelEditDialogStage(model, parent, MainApp.resourceMessage);
+    }
+
+    public AbstractDataModelEditController showDataModelEditDialogStage(AbstractDataModel model, Window parent, ResourceBundle rb) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setResources(ResourceBundle.getBundle("resources.language", this.getLocale()));
+            loader.setResources(rb);
             loader.setLocation(MainApp.class.getResource("view/" + model.datamodelName() + "EditDialog.fxml"));
             AnchorPane page = (AnchorPane) loader.load();
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle(MainApp.resourceMessage.getString(model.datamodelName().toLowerCase() + ".title"));
+            dialogStage.setTitle(rb.getString(model.datamodelName().toLowerCase() + ".title"));
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(parent);
             dialogStage.getIcons().add(Resource.LOGO_ICON_32);
@@ -277,14 +345,18 @@ public class MainApp extends Application {
     }
 
     public void showModelManagerTableView(String datamodel) {
+        showModelManagerTableView(datamodel, resourceMessage);
+    }
+
+    public void showModelManagerTableView(String datamodel, ResourceBundle rb) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setResources(ResourceBundle.getBundle("resources.language", this.getLocale()));
+            loader.setResources(rb);
             loader.setLocation(MainApp.class.getResource("view/" + datamodel + "Overview.fxml"));
             AnchorPane modelManagerOverview = (AnchorPane) loader.load();
 
             Stage stage = new Stage();
-            stage.setTitle(this.getResourceMessage().getString(datamodel.toLowerCase() + ".title"));
+            stage.setTitle(rb.getString(datamodel.toLowerCase() + ".title"));
             stage.initModality(Modality.NONE);
             stage.initOwner(this.getPrimaryStage());
             stage.getIcons().add(Resource.LOGO_ICON_32);
@@ -303,7 +375,7 @@ public class MainApp extends Application {
 
             ModelManagerTableViewController controller = loader.getController();
             controller.setMainApp(this);
-
+            controller.setResourceBundle(resourceBundle);
             stage.show();
 
         } catch (IOException e) {
@@ -311,14 +383,6 @@ public class MainApp extends Application {
         }
     }
 
-    /**
-     * **
-     */
-    /**
-     * Returns the main stage.
-     *
-     * @return
-     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }
@@ -331,11 +395,11 @@ public class MainApp extends Application {
         MainApp.resourceMessage = resourceMessage;
     }
 
-    public HashMap<String, ObservableList> getDataMap() {
+    public HashMap<String, JAXBObservableList> getDataMap() {
         return dataMap;
     }
 
-    public void setDataMap(HashMap<String, ObservableList> dataMap) {
+    public void setDataMap(HashMap<String, JAXBObservableList> dataMap) {
         this.dataMap = dataMap;
     }
 
@@ -359,8 +423,14 @@ public class MainApp extends Application {
         this.trayIcon = trayIcon;
     }
 
-    
-    
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
+
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

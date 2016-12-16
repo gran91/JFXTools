@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="bAdd" mnemonicParsing="false" text="Button" />
+            <Button fx:id="bDel" mnemonicParsing="false" text="Button" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
+   <right>
+      <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="bUp" mnemonicParsing="false" text="Button" />
+            <Button fx:id="bDown" mnemonicParsing="false" text="Button" />
+         </children>
+         <BorderPane.margin>
+            <Insets left="5.0" right="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </right>
+</BorderPane>

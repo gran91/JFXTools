@@ -24,6 +24,7 @@ import org.controlsfx.control.PopOver;
 import com.kles.MainApp;
 import com.kles.model.AbstractDataModel;
 import com.kles.view.AbstractDataModelEditController;
+import java.util.ResourceBundle;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -61,33 +62,30 @@ public class ComboboxModelAdd extends HBox {
         model = m;
         this.getChildren().add(listModel);
         this.getChildren().add(bAdd);
-        init();
+        init(mainApp.getResourceBundle());
     }
 
     public void init() {
+        init(MainApp.resourceMessage);
+    }
+
+    public void init(ResourceBundle rb) {
         this.setPrefHeight(35);
         this.setAlignment(Pos.CENTER);
         this.setSpacing(10);
         listModel.setMinWidth(265);
         listModel.setPrefWidth(265);
-        listModel.setPromptText(MainApp.resourceMessage.getString(model.datamodelName().toLowerCase() + ".select"));
+        listModel.setPromptText(rb.getString(model.datamodelName().toLowerCase() + ".select"));
         listModel.setItems(list);
-        listModel.setCellFactory(new Callback<ListView<AbstractDataModel>, ListCell<AbstractDataModel>>() {
-
+        listModel.setCellFactory((ListView<AbstractDataModel> param) -> new ListCell<AbstractDataModel>() {
             @Override
-            public ListCell<AbstractDataModel> call(ListView<AbstractDataModel> param) {
-                return new ListCell<AbstractDataModel>() {
-                    @Override
-                    public void updateItem(AbstractDataModel item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.toString());
-                        } else {
-                            setText(null);
-                        }
-                    }
-                };
-
+            public void updateItem(AbstractDataModel item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item.toString());
+                } else {
+                    setText(null);
+                }
             }
         });
         bAdd.setOnAction((ActionEvent event) -> {
@@ -124,7 +122,7 @@ public class ComboboxModelAdd extends HBox {
         popOver.setDetached(false);
         popOver.setArrowSize(10);
         model = model.newInstance();
-        AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model);
+        AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model, this.getScene().getWindow(), mainApp.getResourceBundle());
         popOver.setContentNode(controller.getDialogStage().getScene().getRoot());
         controller.isClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue && !controller.hasError()) {

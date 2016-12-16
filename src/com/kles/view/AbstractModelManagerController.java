@@ -18,6 +18,7 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
     // Reference to the main application.
     protected MainApp mainApp;
     protected ResourceBundle resourseMessage;
+    protected ResourceBundle resourceBundle;
     protected String datamodelname = "";
     protected AbstractDataModel datamodel;
     protected AbstractDataModel parentmodel;
@@ -50,6 +51,7 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
         resourseMessage = mainApp.getResourceMessage();
+        resourceBundle = mainApp.getResourceBundle();
     }
 
     public <T> void setData(ObservableList<T> listData) {
@@ -65,7 +67,7 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
     public void handleNew() {
         //datamodel = datamodel.newInstance();
         newInstance();
-        boolean okClicked = mainApp.showDataModelEditDialog(datamodel);
+        boolean okClicked = mainApp.showDataModelEditDialog(datamodel, resourceBundle);
         if (okClicked) {
             listData.add(datamodel);
         }
@@ -81,7 +83,7 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
         if (datamodel != null) {
             AbstractDataModel tempData = datamodel.newInstance();
             tempData.populateData(datamodel.extractData());
-            boolean okClicked = mainApp.showDataModelEditDialog(tempData);
+            boolean okClicked = mainApp.showDataModelEditDialog(tempData, resourceBundle);
             if (okClicked) {
                 listData.add(tempData);
             }
@@ -98,7 +100,7 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
     @Override
     public void handleEdit() {
         if (datamodel != null) {
-            boolean okClicked = mainApp.showDataModelEditDialog(datamodel);
+            boolean okClicked = mainApp.showDataModelEditDialog(datamodel, resourceBundle);
         } else {
             FxUtil.showAlert(Alert.AlertType.WARNING, resourseMessage.getString("main.delete"), resourseMessage.getString("main.noselection"), String.format(datamodelname + ".noselection" + resourseMessage.getString(datamodelname.toLowerCase() + ".label")));
         }
@@ -138,6 +140,20 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
     public void setParentmodel(AbstractDataModel parentmodel) {
         this.parentmodel = parentmodel;
     }
-    
-    
+
+    public ResourceBundle getResourseMessage() {
+        return resourseMessage;
+    }
+
+    public void setResourseMessage(ResourceBundle resourseMessage) {
+        this.resourseMessage = resourseMessage;
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
+
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
 }

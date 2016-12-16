@@ -13,7 +13,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import com.kles.MainApp;
+import com.kles.fx.custom.TextFieldValidator;
 import com.kles.model.AbstractDataModel;
+import java.util.ResourceBundle;
+import javafx.beans.binding.LongBinding;
 
 /**
  * Dialog to edit details of a environment.
@@ -28,6 +31,7 @@ public class AbstractDataModelEditController {
     protected Stage dialogStage;
     protected AbstractDataModel datamodel;
     protected AbstractDataModel parentmodel;
+    protected ResourceBundle resourceBundle;
     protected BooleanProperty hasError = new SimpleBooleanProperty(false);
     protected BooleanProperty okClicked = new SimpleBooleanProperty(false);
     protected String errorMessage = "";
@@ -57,6 +61,8 @@ public class AbstractDataModelEditController {
 
     public void setMainApp(MainApp main) {
         mainApp = main;
+        resourceBundle = mainApp.getResourceBundle();
+        setBooleanMessage();
     }
 
     /**
@@ -66,6 +72,9 @@ public class AbstractDataModelEditController {
      */
     public void setDataModel(AbstractDataModel datamodel) {
         this.datamodel = datamodel;
+    }
+
+    public void setBooleanMessage() {
     }
 
     public AbstractDataModel getParentmodel() {
