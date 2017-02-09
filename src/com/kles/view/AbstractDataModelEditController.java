@@ -13,10 +13,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import com.kles.MainApp;
-import com.kles.fx.custom.TextFieldValidator;
 import com.kles.model.AbstractDataModel;
 import java.util.ResourceBundle;
-import javafx.beans.binding.LongBinding;
 
 /**
  * Dialog to edit details of a environment.

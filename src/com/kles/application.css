@@ -1,5 +1,6 @@
 .root {
-	error-color: #ffa0a0 ;
+	/*error-color: #ffa0a0 ;*/
+        error-color:#26C4EC;
 }
 .text-field:validation-error {
 	-fx-background-color: error-color ;

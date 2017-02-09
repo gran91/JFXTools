@@ -3,9 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox spacing="5.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Button defaultButton="true" layoutX="197.1875" layoutY="281.0" mnemonicParsing="false" onAction="#handleOk" prefWidth="110.0" text="OK" />
-      <Button layoutX="249.375" layoutY="281.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="110.0" text="%main.cancel" />
-   </children>
+<HBox spacing="5.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kles.view.AbstractDataModelEditController" >
+    <children>
+        <Button defaultButton="true" layoutX="197.1875" layoutY="281.0" mnemonicParsing="false" onAction="#handleOk" prefWidth="110.0" text="OK" />
+        <Button layoutX="249.375" layoutY="281.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="110.0" text="%main.cancel" />
+    </children>
 </HBox>
