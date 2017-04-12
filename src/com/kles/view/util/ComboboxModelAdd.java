@@ -34,23 +34,24 @@ import javafx.scene.image.ImageView;
  */
 public class ComboboxModelAdd extends HBox {
 
-    Image imageAdd = new Image(getClass().getResourceAsStream("/resources/images/add.png"));
+    protected Image imageAdd = new Image(getClass().getResourceAsStream("/resources/images/add.png"));
     Button button3 = new Button("Accept", new ImageView(imageAdd));
     @FXML
-    private ComboBox<AbstractDataModel> listModel = new ComboBox();
+    protected ComboBox<AbstractDataModel> listModel = new ComboBox();
 
     @FXML
-    private Button bAdd = new Button("", new ImageView(imageAdd));
+    protected Button bAdd = new Button("", new ImageView(imageAdd));
 
-    private AbstractDataModel model;
-    private MainApp mainApp;
-    private Stage dialogStage;
-    private ObservableList list;
+    protected AbstractDataModel model;
+    protected MainApp mainApp;
+    protected Stage dialogStage;
+    protected ObservableList list;
     protected PopOver popOver;
     protected double targetX;
     protected double targetY;
 
     public ComboboxModelAdd() {
+        this.setSpacing(5.0d);
         this.getChildren().add(listModel);
         this.getChildren().add(bAdd);
     }
@@ -70,11 +71,14 @@ public class ComboboxModelAdd extends HBox {
 
     public void init(ResourceBundle rb) {
         this.setPrefHeight(35);
+        this.setSpacing(5.0d);
         this.setAlignment(Pos.CENTER);
         this.setSpacing(10);
         listModel.setMinWidth(265);
         listModel.setPrefWidth(265);
-        listModel.setPromptText(rb.getString(model.datamodelName().toLowerCase() + ".select"));
+        if (rb.containsKey(model.datamodelName().toLowerCase() + ".select")) {
+            listModel.setPromptText(rb.getString(model.datamodelName().toLowerCase() + ".select"));
+        }
         listModel.setItems(list);
         listModel.setCellFactory((ListView<AbstractDataModel> param) -> new ListCell<AbstractDataModel>() {
             @Override
@@ -116,11 +120,14 @@ public class ComboboxModelAdd extends HBox {
     }
 
     protected PopOver createPopOver() throws IOException {
+        return createPopOver(model.newInstance());
+    }
+
+    protected PopOver createPopOver(AbstractDataModel model) throws IOException {
         popOver = new PopOver();
         popOver.setDetachable(false);
         popOver.setDetached(false);
         popOver.setArrowSize(10);
-        model = model.newInstance();
         AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model, this.getScene().getWindow(), mainApp.getResourceBundle());
         popOver.setContentNode(controller.getDialogStage().getScene().getRoot());
         controller.isClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

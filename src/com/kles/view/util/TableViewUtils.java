@@ -123,7 +123,6 @@ public class TableViewUtils {
             for (Object item : table.getItems()) {
                 columnData.add(tableColumn.getCellObservableValue(0).getValue().toString());
             }
-          
         }
         );
     }

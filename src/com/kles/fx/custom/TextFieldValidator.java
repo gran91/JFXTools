@@ -36,11 +36,11 @@ public class TextFieldValidator {
     public static final Pattern m3LoginPattern = Pattern.compile("^[a-zA-Z0-9]{1,10}$");
     public static final Pattern ipPattern = Pattern.compile("^(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])$");
     public static final Pattern filePathPattern = Pattern.compile("^(([a-zA-Z]:|\\\\)\\\\)?(((\\.)|(\\.\\.)|([^\\\\/:\\*\\?\"\\|<>\\. ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?))\\\\)*[^\\\\/:\\*\\?\"\\|<>\\. ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?$");
-    public static final Pattern directoryPathPattern = Pattern.compile("([A-Z]:\\\\[^/:\\*;\\/\\:\\?<>\\|]+)|(\\\\{2}[^/:\\*;\\/\\:\\?<>\\|]+)");
+    public static final Pattern directoryPathPattern = Pattern.compile("([A-Z]:\\\\[^/:\\*;\\/\\:\\?<>\\|]*+)|(\\\\{2}[^/:\\*;\\/\\:\\?<>\\|]+)");
     public static final Pattern hostnamePattern = Pattern.compile("^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\\.?$");
     public static final Pattern allPortNumberPattern = Pattern.compile("^(6553[0-5]|655[0-2]\\d|65[0-4]\\d\\d|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3}|0)$");
-    public static final Pattern positiveNumberPattern=Pattern.compile("^[1-9]\\d*(\\.\\d+)?$");
-    public static final Pattern positiveNumberWithZeroPattern=Pattern.compile("^[0-9]\\d*(\\.\\d+)?$");
+    public static final Pattern positiveNumberPattern = Pattern.compile("^[1-9]\\d*(\\.\\d+)?$");
+    public static final Pattern positiveNumberWithZeroPattern = Pattern.compile("^[0-9]\\d*(\\.\\d+)?$");
 
     public static BooleanBinding emptyTextFieldBindingOrOther(TextField textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
         BooleanBinding binding = Bindings.createBooleanBinding(()
@@ -48,12 +48,19 @@ public class TextFieldValidator {
         configureTextFieldBinding(binding, textField, message, messages, other);
         return binding.and(other.not());
     }
-    
+
     public static BooleanBinding emptyTextFieldBindingAndOther(TextField textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
         BooleanBinding binding = Bindings.createBooleanBinding(()
                 -> textField.getText().trim().isEmpty(), textField.textProperty());
         configureTextFieldBinding(binding, textField, message, messages, other);
         return binding.and(other.not());
+    }
+
+    public static BooleanBinding isEquals(TextField textField1, TextField textField2, String message, Map<BooleanBinding, String> messages) {
+        BooleanBinding binding = Bindings.createBooleanBinding(()
+                -> !textField1.getText().equals(textField2.getText()), textField1.textProperty());
+        configureTextFieldBinding(binding, textField1, message, messages);
+        return binding;
     }
 
     public static BooleanBinding emptyTextFieldBinding(TextField textField, String message, Map<BooleanBinding, String> messages) {
@@ -141,9 +148,9 @@ public class TextFieldValidator {
             protected ObservableList<Node> computeValue() {
                 return FXCollections.observableList(
                         Arrays.stream(validationBindings)
-                        .filter(BooleanBinding::get)
-                        .map(messages::get).map(Label::new)
-                        .collect(Collectors.toList())
+                                .filter(BooleanBinding::get)
+                                .map(messages::get).map(Label::new)
+                                .collect(Collectors.toList())
                 );
             }
         };
@@ -166,9 +173,9 @@ public class TextFieldValidator {
             protected ObservableList<Node> computeValue() {
                 return FXCollections.observableList(
                         Arrays.stream(validationBindings)
-                        .filter(BooleanBinding::get)
-                        .map(messages::get).map(Label::new)
-                        .collect(Collectors.toList())
+                                .filter(BooleanBinding::get)
+                                .map(messages::get).map(Label::new)
+                                .collect(Collectors.toList())
                 );
             }
         };

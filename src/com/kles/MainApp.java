@@ -36,6 +36,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -62,7 +63,7 @@ public class MainApp extends Application {
     public static final ObservableList<Language> listLanguage = FXCollections.observableArrayList();
     public Preferences prefs;
     private HashMap<String, JAXBObservableList> dataMap;
-    private final DigitalClock clock = new DigitalClock(DigitalClock.CLOCK);
+    public final DigitalClock clock = new DigitalClock(DigitalClock.CLOCK);
     private final LinkedHashMap<String, String> listSkin = new LinkedHashMap<>();
     public static final Image LOGO_IMAGE = new Image(MainApp.class.getResourceAsStream("/resources/images/logo.png"));
 
@@ -80,6 +81,7 @@ public class MainApp extends Application {
     protected void initApp() {
         locale = Locale.getDefault();
         resourceMessage = ResourceBundle.getBundle("resources/language", Locale.getDefault());
+            resourceBundle = ResourceBundle.getBundle("resources/m3upgrader", Locale.getDefault());
         dataMap = new HashMap();
         loadSkins();
         if (prefs.get(SKIN, null) == null) {
@@ -353,7 +355,7 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setResources(rb);
             loader.setLocation(MainApp.class.getResource("view/" + datamodel + "Overview.fxml"));
-            AnchorPane modelManagerOverview = (AnchorPane) loader.load();
+            Pane modelManagerOverview = loader.load();
 
             Stage stage = new Stage();
             stage.setTitle(rb.getString(datamodel.toLowerCase() + ".title"));

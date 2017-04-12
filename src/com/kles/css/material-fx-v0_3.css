@@ -799,3 +799,7 @@
 .toolbar-colored .text {
 	-fx-fill: white;
 }
+
+.glyph-icon{
+    -fx-font-family: FontAwesome;
+}

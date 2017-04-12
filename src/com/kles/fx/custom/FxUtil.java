@@ -222,11 +222,14 @@ public class FxUtil {
         alert.showAndWait();
     }
 
-    public static ProgressDialogController showProgressDialog(Stage primaryStage) {
+    public static ProgressDialogController showProgressDialog(Stage primaryStage){
+        return showProgressDialog(primaryStage, ResourceBundle.getBundle("resources.language", Locale.getDefault()));
+    }
+    public static ProgressDialogController showProgressDialog(Stage primaryStage,ResourceBundle res) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setResources(ResourceBundle.getBundle("resources.language", Locale.getDefault()));
-            loader.setLocation(FxUtil.class.getResource("/org/kles/view/util/ProgressDialog.fxml"));
+            loader.setLocation(FxUtil.class.getResource("/com/kles/view/util/ProgressDialog.fxml"));
             StackPane page = (StackPane) loader.load();
 
             Stage dialogStage = new Stage(StageStyle.UNDECORATED);
