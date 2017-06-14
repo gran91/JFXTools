@@ -66,7 +66,7 @@ public class ComboboxModelAdd extends HBox {
     }
 
     public void init() {
-        init(MainApp.resourceMessage);
+        init(mainApp.getResourceBundle());
     }
 
     public void init(ResourceBundle rb) {

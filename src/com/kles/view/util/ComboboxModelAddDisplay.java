@@ -25,7 +25,7 @@ import javafx.scene.image.ImageView;
  */
 public class ComboboxModelAddDisplay extends ComboboxModelAdd {
 
-    Image imageDisplay = new Image(getClass().getResourceAsStream("/resources/images/add.png"));
+    Image imageDisplay = new Image(getClass().getResourceAsStream("/resources/images/info.png"));
    
     @FXML
     private Button bDisplay = new Button("", new ImageView(imageDisplay));

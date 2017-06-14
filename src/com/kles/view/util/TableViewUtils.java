@@ -119,10 +119,10 @@ public class TableViewUtils {
             tableColumn.setText("");
             tableColumn.setGraphic(vBox);
 
-            List<String> columnData = new ArrayList<>();
-            for (Object item : table.getItems()) {
-                columnData.add(tableColumn.getCellObservableValue(0).getValue().toString());
-            }
+//            List<String> columnData = new ArrayList<>();
+//            for (Object item : table.getItems()) {
+//                columnData.add(tableColumn.getCellObservableValue(0).getValue().toString());
+//            }
         }
         );
     }

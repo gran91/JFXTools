@@ -29,6 +29,7 @@ public class FilePathChooser extends HBox {
     private String title = "";
 
     public FilePathChooser() {
+        this.setSpacing(5d);
         this.getChildren().add(pathField);
         this.getChildren().add(buttonPath);
         buttonPath.setOnAction(e -> chooseFile(e));

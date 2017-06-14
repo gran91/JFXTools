@@ -35,7 +35,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,6 +45,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.apache.commons.io.FilenameUtils;
 import resources.Resource;
+import resources.ResourceApp;
 
 public class MainApp extends Application {
 
@@ -81,7 +81,7 @@ public class MainApp extends Application {
     protected void initApp() {
         locale = Locale.getDefault();
         resourceMessage = ResourceBundle.getBundle("resources/language", Locale.getDefault());
-            resourceBundle = ResourceBundle.getBundle("resources/m3upgrader", Locale.getDefault());
+        resourceBundle = ResourceBundle.getBundle("resources/language", Locale.getDefault());
         dataMap = new HashMap();
         loadSkins();
         if (prefs.get(SKIN, null) == null) {
@@ -112,7 +112,6 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.titleProperty().bind(title);
         this.primaryStage.getIcons().addAll(Resource.LOGO_ICON_128, Resource.LOGO_ICON_64, Resource.LOGO_ICON_32, Resource.LOGO_ICON_16);
-        loadView();
     }
 
     public void loadView() {
@@ -149,7 +148,7 @@ public class MainApp extends Application {
         if (filePath != null) {
             return new File(filePath);
         } else {
-            Path p = Paths.get(System.getProperty("user.dir") + System.getProperty("file.separator") + Resource.TITLE);
+            Path p = Paths.get(System.getProperty("user.dir") + System.getProperty("file.separator") + ResourceApp.TITLE+ System.getProperty("file.separator")+"data");
             System.out.println(p.toFile().getAbsolutePath());
             if (p.toFile().exists() && p.toFile().isDirectory()) {
 
@@ -310,7 +309,7 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setResources(rb);
             loader.setLocation(MainApp.class.getResource("view/" + model.datamodelName() + "EditDialog.fxml"));
-            AnchorPane page = (AnchorPane) loader.load();
+            Pane page = loader.load();
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle(rb.getString(model.datamodelName().toLowerCase() + ".title"));
