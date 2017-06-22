@@ -15,9 +15,10 @@ import javafx.scene.control.Button;
 import javafx.util.Duration;
 import com.kles.MainApp;
 import com.kles.model.AbstractDataModel;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.util.ResourceBundle;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import resources.ResourceCSS;
 
 /**
  *
@@ -25,23 +26,29 @@ import javafx.scene.image.ImageView;
  */
 public class ComboboxModelAddDisplay extends ComboboxModelAdd {
 
-    Image imageDisplay = new Image(getClass().getResourceAsStream("/resources/images/info.png"));
-   
+    //Image imageDisplay = new Image(getClass().getResourceAsStream("/resources/images/info.png"));
+    FontAwesomeIcon imageDisplay = FontAwesomeIcon.EDIT;
+
     @FXML
-    private Button bDisplay = new Button("", new ImageView(imageDisplay));
+    private Button bDisplay;// = new Button("", new ImageView(imageDisplay));
 
     public ComboboxModelAddDisplay() {
         super();
+        FontAwesomeIconView fInfo = new FontAwesomeIconView(imageDisplay);
+        fInfo.setSize("15");
+        fInfo.setStyle(ResourceCSS.INFORMATION_STYLE);
+        bDisplay = new Button("", fInfo);
         this.getChildren().add(bDisplay);
     }
 
     public ComboboxModelAddDisplay(MainApp main, ObservableList l, AbstractDataModel m) {
         super(main, l, m);
+        FontAwesomeIconView fInfo = new FontAwesomeIconView(imageAdd);
+        fInfo.setStyle(ResourceCSS.INFORMATION_STYLE);
+        bDisplay = new Button("", fInfo);
         this.getChildren().add(bDisplay);
     }
 
-    
-    
     public void init(ResourceBundle rb) {
         super.init(rb);
         bDisplay.setOnAction((ActionEvent event) -> {

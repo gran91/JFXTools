@@ -23,10 +23,13 @@ import org.controlsfx.control.PopOver;
 import com.kles.MainApp;
 import com.kles.model.AbstractDataModel;
 import com.kles.view.AbstractDataModelEditController;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.util.ResourceBundle;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import resources.ResourceCSS;
 
 /**
  *
@@ -34,13 +37,15 @@ import javafx.scene.image.ImageView;
  */
 public class ComboboxModelAdd extends HBox {
 
-    protected Image imageAdd = new Image(getClass().getResourceAsStream("/resources/images/add.png"));
-    Button button3 = new Button("Accept", new ImageView(imageAdd));
+    //protected Image imageAdd = new Image(getClass().getResourceAsStream("/resources/images/add.png"));
+    protected FontAwesomeIcon imageAdd = FontAwesomeIcon.PLUS;
+    //Button button3 = new Button("Accept", new ImageView(imageAdd));
     @FXML
     protected ComboBox<AbstractDataModel> listModel = new ComboBox();
 
     @FXML
-    protected Button bAdd = new Button("", new ImageView(imageAdd));
+    //protected Button bAdd = new Button("", new ImageView(imageAdd));
+    protected Button bAdd;
 
     protected AbstractDataModel model;
     protected MainApp mainApp;
@@ -51,17 +56,22 @@ public class ComboboxModelAdd extends HBox {
     protected double targetY;
 
     public ComboboxModelAdd() {
+        FontAwesomeIconView fAdd=new FontAwesomeIconView(imageAdd);
+        fAdd.setStyle(ResourceCSS.SUCCESS_STYLE);
+        fAdd.setSize("15");
+        bAdd = new Button("", fAdd);
         this.setSpacing(5.0d);
         this.getChildren().add(listModel);
         this.getChildren().add(bAdd);
     }
 
     public ComboboxModelAdd(MainApp main, ObservableList l, AbstractDataModel m) {
+        this();
         mainApp = main;
         list = l;
         model = m;
-        this.getChildren().add(listModel);
-        this.getChildren().add(bAdd);
+//        this.getChildren().add(listModel);
+//        this.getChildren().add(bAdd);
         init(mainApp.getResourceBundle());
     }
 
