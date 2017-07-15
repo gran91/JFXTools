@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -28,11 +29,21 @@ public class FilePathChooser extends HBox {
     private int type = 0;
     private String title = "";
 
-    public FilePathChooser() {
+    public FilePathChooser(Priority p) {
         this.setSpacing(5d);
+        pathField.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(pathField, p);
         this.getChildren().add(pathField);
         this.getChildren().add(buttonPath);
         buttonPath.setOnAction(e -> chooseFile(e));
+    }
+
+    public FilePathChooser() {
+        this(Priority.ALWAYS);
+    }
+
+    public void fixedSize() {
+        HBox.setHgrow(pathField, Priority.SOMETIMES);
     }
 
     @FXML

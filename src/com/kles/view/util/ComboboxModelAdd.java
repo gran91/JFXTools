@@ -27,8 +27,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.util.ResourceBundle;
 import javafx.geometry.Pos;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.Priority;
 import resources.ResourceCSS;
 
 /**
@@ -37,14 +36,11 @@ import resources.ResourceCSS;
  */
 public class ComboboxModelAdd extends HBox {
 
-    //protected Image imageAdd = new Image(getClass().getResourceAsStream("/resources/images/add.png"));
     protected FontAwesomeIcon imageAdd = FontAwesomeIcon.PLUS;
-    //Button button3 = new Button("Accept", new ImageView(imageAdd));
     @FXML
     protected ComboBox<AbstractDataModel> listModel = new ComboBox();
 
     @FXML
-    //protected Button bAdd = new Button("", new ImageView(imageAdd));
     protected Button bAdd;
 
     protected AbstractDataModel model;
@@ -54,13 +50,20 @@ public class ComboboxModelAdd extends HBox {
     protected PopOver popOver;
     protected double targetX;
     protected double targetY;
+    protected double prefHeight = 35;
+    protected double spacing = 5.0d;
+    protected Pos position = Pos.CENTER_LEFT;
+    protected double prefWidth = 265;
+    protected double minWidth = 265;
+    protected double maxWidth = Double.MAX_VALUE;
 
     public ComboboxModelAdd() {
-        FontAwesomeIconView fAdd=new FontAwesomeIconView(imageAdd);
+        FontAwesomeIconView fAdd = new FontAwesomeIconView(imageAdd);
         fAdd.setStyle(ResourceCSS.SUCCESS_STYLE);
         fAdd.setSize("15");
         bAdd = new Button("", fAdd);
         this.setSpacing(5.0d);
+        HBox.setHgrow(listModel, Priority.ALWAYS);
         this.getChildren().add(listModel);
         this.getChildren().add(bAdd);
     }
@@ -70,8 +73,6 @@ public class ComboboxModelAdd extends HBox {
         mainApp = main;
         list = l;
         model = m;
-//        this.getChildren().add(listModel);
-//        this.getChildren().add(bAdd);
         init(mainApp.getResourceBundle());
     }
 
@@ -80,12 +81,11 @@ public class ComboboxModelAdd extends HBox {
     }
 
     public void init(ResourceBundle rb) {
-        this.setPrefHeight(35);
-        this.setSpacing(5.0d);
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(10);
-        listModel.setMinWidth(265);
-        listModel.setPrefWidth(265);
+        this.setPrefHeight(prefHeight);
+        this.setSpacing(spacing);
+        this.setAlignment(position);
+        listModel.setMinWidth(minWidth);
+        listModel.setPrefWidth(prefWidth);
         if (rb.containsKey(model.datamodelName().toLowerCase() + ".select")) {
             listModel.setPromptText(rb.getString(model.datamodelName().toLowerCase() + ".select"));
         }
@@ -126,7 +126,6 @@ public class ComboboxModelAdd extends HBox {
         } catch (IOException ex) {
             Logger.getLogger(ComboboxModelAdd.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     protected PopOver createPopOver() throws IOException {
