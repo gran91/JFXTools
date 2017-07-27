@@ -139,13 +139,19 @@ public class ComboboxModelAdd extends HBox {
         popOver.setArrowSize(10);
         AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model, this.getScene().getWindow(), mainApp.getResourceBundle());
         popOver.setContentNode(controller.getDialogStage().getScene().getRoot());
-        controller.isClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        controller.isOkClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue && !controller.hasError()) {
-                list.add(model);
+                if (!list.contains(model)) {
+                    list.add(model);
+                }
                 popOver.hide();
             } else {
                 popOver.show(this);
             }
+        });
+        
+        controller.isCancelClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                popOver.hide();
         });
         return popOver;
     }

@@ -14,13 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import com.kles.MainApp;
 import com.kles.model.AbstractDataModel;
-import com.sun.javafx.geom.BaseBounds;
-import com.sun.javafx.geom.transform.BaseTransform;
-import com.sun.javafx.jmx.MXNodeAlgorithm;
-import com.sun.javafx.jmx.MXNodeAlgorithmContext;
-import com.sun.javafx.sg.prism.NGNode;
 import java.util.ResourceBundle;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
 /**
@@ -31,7 +25,7 @@ import javafx.scene.layout.Pane;
 public class AbstractDataModelEditController {
 
     @FXML
-    protected GridPane grid;
+    protected Pane grid;
     protected MainApp mainApp;
     protected Stage dialogStage;
     protected AbstractDataModel datamodel;
@@ -39,6 +33,7 @@ public class AbstractDataModelEditController {
     protected ResourceBundle resourceBundle;
     protected BooleanProperty hasError = new SimpleBooleanProperty(false);
     protected BooleanProperty okClicked = new SimpleBooleanProperty(false);
+    protected BooleanProperty cancelClicked = new SimpleBooleanProperty(false);
     protected String errorMessage = "";
     protected Map<BooleanBinding, String> messages = new LinkedHashMap<>();
 
@@ -99,8 +94,16 @@ public class AbstractDataModelEditController {
         return okClicked.get();
     }
 
-    public BooleanProperty isClickedProperty() {
+    public BooleanProperty isOkClickedProperty() {
         return okClicked;
+    }
+
+    public boolean isCancemClicked() {
+        return cancelClicked.get();
+    }
+
+    public BooleanProperty isCancelClickedProperty() {
+        return cancelClicked;
     }
 
     public boolean hasError() {
@@ -136,6 +139,7 @@ public class AbstractDataModelEditController {
      */
     @FXML
     private void handleCancel() {
+        cancelClicked.set(true);
         dialogStage.close();
     }
 
@@ -173,5 +177,5 @@ public class AbstractDataModelEditController {
     public void setGrid(GridPane grid) {
         this.grid = grid;
     }
-    
+
 }
