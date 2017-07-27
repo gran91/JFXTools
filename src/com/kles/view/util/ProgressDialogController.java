@@ -4,6 +4,7 @@ import javafx.concurrent.Service;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -17,6 +18,8 @@ public class ProgressDialogController {
     private Label label;
     @FXML
     private ProgressIndicator progress;
+    @FXML
+    private StackPane pane;
 
     private Stage stage;
     
@@ -67,4 +70,14 @@ public class ProgressDialogController {
         this.service = service;
         label.textProperty().bind(service.messageProperty());
     }
+
+    public StackPane getPane() {
+        return pane;
+    }
+
+    public void setPane(StackPane pane) {
+        this.pane = pane;
+    }
+    
+   
 }

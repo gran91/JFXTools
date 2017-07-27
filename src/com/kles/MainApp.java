@@ -36,6 +36,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -65,6 +66,7 @@ public class MainApp extends Application {
     private HashMap<String, JAXBObservableList> dataMap;
     public final DigitalClock clock = new DigitalClock(DigitalClock.CLOCK);
     private final LinkedHashMap<String, String> listSkin = new LinkedHashMap<>();
+    public static String filePathDataKey="filepath";
     public static final Image LOGO_IMAGE = new Image(MainApp.class.getResourceAsStream("/resources/images/logo.png"));
 
     /**
@@ -144,11 +146,11 @@ public class MainApp extends Application {
     }
 
     public File getDataDirectoryPath() {
-        String filePath = prefs.get("filePath", null);
+        String filePath = prefs.get(filePathDataKey, null);
         if (filePath != null) {
             return new File(filePath);
         } else {
-            Path p = Paths.get(System.getProperty("user.dir") + System.getProperty("file.separator") + ResourceApp.TITLE+ System.getProperty("file.separator")+"data");
+            Path p = Paths.get(System.getProperty("user.dir") + System.getProperty("file.separator") + ResourceApp.TITLE + System.getProperty("file.separator") + "data");
             System.out.println(p.toFile().getAbsolutePath());
             if (p.toFile().exists() && p.toFile().isDirectory()) {
 
@@ -161,10 +163,10 @@ public class MainApp extends Application {
 
     public void setRegistryFilePath(File file) {
         if (file != null) {
-            prefs.put("filePath", file.getAbsolutePath());
+            prefs.put(filePathDataKey, file.getAbsolutePath());
             dirData.set(" - " + file.getAbsolutePath());
         } else {
-            prefs.remove("filePath");
+            prefs.remove(filePathDataKey);
             dirData.set("");
         }
     }
@@ -174,7 +176,9 @@ public class MainApp extends Application {
             if (directory.exists() && directory.isDirectory()) {
                 File[] listFile = directory.listFiles();
                 for (File f : listFile) {
-                    loadData(f);
+                    if (f.exists() && !f.isDirectory()) {
+                        loadData(f);
+                    }
                 }
             }
             setRegistryFilePath(directory);
@@ -184,22 +188,25 @@ public class MainApp extends Application {
     }
 
     protected void loadData(File f) throws ClassNotFoundException {
-        Class c = Class.forName("com.kles.model." + FilenameUtils.removeExtension(f.getName()));
-        dataMap.remove(FilenameUtils.removeExtension(f.getName()));
-        ObservableList temp = FXCollections.observableArrayList();
-        JAXBContext jc;
-        List list = null;
         try {
-            jc = JAXBContext.newInstance(Wrapper.class, c);
-            Unmarshaller unMarshaller = jc.createUnmarshaller();
-            list = com.kles.jaxb.JAXBUtil.unmarshalList(unMarshaller, c, f.getAbsolutePath());
-            if (list != null) {
-                temp.addAll(list);
+            Class c = Class.forName("com.kles.model." + FilenameUtils.removeExtension(f.getName()));
+            dataMap.remove(FilenameUtils.removeExtension(f.getName()));
+            ObservableList temp = FXCollections.observableArrayList();
+            JAXBContext jc;
+            List list = null;
+            try {
+                jc = JAXBContext.newInstance(Wrapper.class, c);
+                Unmarshaller unMarshaller = jc.createUnmarshaller();
+                list = com.kles.jaxb.JAXBUtil.unmarshalList(unMarshaller, c, f.getAbsolutePath());
+                if (list != null) {
+                    temp.addAll(list);
+                }
+            } catch (JAXBException ex) {
+                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (JAXBException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+            dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
+        } catch (ClassNotFoundException e) {
         }
-        dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
     }
 
     public void saveDataToFile(File file) throws ClassNotFoundException {
@@ -265,7 +272,7 @@ public class MainApp extends Application {
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(parent);
             dialogStage.getIcons().add(Resource.LOGO_ICON_32);
-            Scene scene = new Scene(page);
+            Scene scene = new Scene(page, Color.TRANSPARENT);
             scene.getStylesheets().add(MainApp.class.getResource("application.css").toExternalForm());
             dialogStage.setScene(scene);
             /*UndecoratorScene scene = new UndecoratorScene(dialogStage, page);
@@ -287,6 +294,7 @@ public class MainApp extends Application {
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
             controller.setDataModel(model);
+//            controller.getPane().setStyle(ResourceCSS.BACKGROUND_TRANSPARENT);
             dialogStage.showAndWait();
 
             return controller.isOkClicked();
@@ -316,7 +324,7 @@ public class MainApp extends Application {
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(parent);
             dialogStage.getIcons().add(Resource.LOGO_ICON_32);
-            Scene scene = new Scene(page);
+            Scene scene = new Scene(page, Color.TRANSPARENT);
             scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             dialogStage.setScene(scene);
             /*UndecoratorScene scene = new UndecoratorScene(dialogStage, page);
@@ -338,6 +346,7 @@ public class MainApp extends Application {
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
             controller.setDataModel(model);
+//            controller.getPane().setStyle(ResourceCSS.BACKGROUND_TRANSPARENT);
             return controller;
         } catch (IOException e) {
             e.printStackTrace();
@@ -361,7 +370,7 @@ public class MainApp extends Application {
             stage.initModality(Modality.NONE);
             stage.initOwner(this.getPrimaryStage());
             stage.getIcons().add(Resource.LOGO_ICON_32);
-            Scene scene = new Scene(modelManagerOverview);
+            Scene scene = new Scene(modelManagerOverview, Color.TRANSPARENT);
             stage.setScene(scene);
             /*UndecoratorScene scene = new UndecoratorScene(stage, modelManagerOverview);
              stage.setScene(scene);
@@ -412,6 +421,24 @@ public class MainApp extends Application {
         this.locale = locale;
     }
 
+    public Properties getConfigProp() {
+        return configProp;
+    }
+
+    public void setConfigProp(Properties configProp) {
+        this.configProp = configProp;
+    }
+
+    public Preferences getPrefs() {
+        return prefs;
+    }
+
+    public void setPrefs(Preferences prefs) {
+        this.prefs = prefs;
+    }
+
+    
+    
     public LinkedHashMap<String, String> getListSkin() {
         return listSkin;
     }

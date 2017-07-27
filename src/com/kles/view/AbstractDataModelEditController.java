@@ -14,7 +14,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import com.kles.MainApp;
 import com.kles.model.AbstractDataModel;
+import com.sun.javafx.geom.BaseBounds;
+import com.sun.javafx.geom.transform.BaseTransform;
+import com.sun.javafx.jmx.MXNodeAlgorithm;
+import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+import com.sun.javafx.sg.prism.NGNode;
 import java.util.ResourceBundle;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 
 /**
  * Dialog to edit details of a environment.
@@ -158,4 +165,13 @@ public class AbstractDataModelEditController {
             return false;
         }
     }
+
+    public Pane getPane() {
+        return grid;
+    }
+
+    public void setGrid(GridPane grid) {
+        this.grid = grid;
+    }
+    
 }

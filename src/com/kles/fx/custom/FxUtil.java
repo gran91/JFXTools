@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import com.kles.view.util.ProgressDialogController;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import resources.Resource;
 
 /**
@@ -47,7 +48,7 @@ public class FxUtil {
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.getIcons().add(Resource.LOGO_ICON_32);
         StackPane stack = new StackPane(node);
-        Scene scene = new Scene(stack);
+        Scene scene = new Scene(stack,Color.TRANSPARENT);
         scene.getStylesheets().add(MainApp.class.getResource("application.css").toExternalForm());
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
@@ -222,10 +223,11 @@ public class FxUtil {
         alert.showAndWait();
     }
 
-    public static ProgressDialogController showProgressDialog(Stage primaryStage){
+    public static ProgressDialogController showProgressDialog(Stage primaryStage) {
         return showProgressDialog(primaryStage, ResourceBundle.getBundle("resources.language", Locale.getDefault()));
     }
-    public static ProgressDialogController showProgressDialog(Stage primaryStage,ResourceBundle res) {
+
+    public static ProgressDialogController showProgressDialog(Stage primaryStage, ResourceBundle res) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setResources(ResourceBundle.getBundle("resources.language", Locale.getDefault()));
@@ -233,10 +235,11 @@ public class FxUtil {
             StackPane page = (StackPane) loader.load();
 
             Stage dialogStage = new Stage(StageStyle.UNDECORATED);
+            dialogStage.initStyle(StageStyle.TRANSPARENT);
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             dialogStage.getIcons().add(Resource.LOGO_ICON_32);
-            Scene scene = new Scene(page);
+            Scene scene = new Scene(page, Color.TRANSPARENT);
             dialogStage.setScene(scene);
 
             ProgressDialogController controller = loader.getController();

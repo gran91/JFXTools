@@ -134,7 +134,7 @@ public class ComboboxModelAdd extends HBox {
 
     protected PopOver createPopOver(AbstractDataModel model) throws IOException {
         popOver = new PopOver();
-        popOver.setDetachable(false);
+        popOver.setDetachable(true);
         popOver.setDetached(false);
         popOver.setArrowSize(10);
         AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model, this.getScene().getWindow(), mainApp.getResourceBundle());

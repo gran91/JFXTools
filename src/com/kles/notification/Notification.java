@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -80,7 +81,7 @@ public class Notification {
         }
 
         private void initGraphics() {
-            scene = new Scene(new Region());
+            scene = new Scene(new Region(), Color.TRANSPARENT);
             scene.setFill(null);
             scene.getStylesheets().add(getClass().getResource("notifier.css").toExternalForm());
 
