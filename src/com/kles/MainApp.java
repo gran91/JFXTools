@@ -66,7 +66,7 @@ public class MainApp extends Application {
     private HashMap<String, JAXBObservableList> dataMap;
     public final DigitalClock clock = new DigitalClock(DigitalClock.CLOCK);
     private final LinkedHashMap<String, String> listSkin = new LinkedHashMap<>();
-    public static String filePathDataKey="filepath";
+    public static String filePathDataKey = "filePath";
     public static final Image LOGO_IMAGE = new Image(MainApp.class.getResourceAsStream("/resources/images/logo.png"));
 
     /**
@@ -188,8 +188,9 @@ public class MainApp extends Application {
     }
 
     protected void loadData(File f) throws ClassNotFoundException {
-        try {
-            Class c = Class.forName("com.kles.model." + FilenameUtils.removeExtension(f.getName()));
+        final String name = FilenameUtils.removeExtension(f.getName());
+        if (dataMap.containsKey(name) && FilenameUtils.getExtension(f.getName()).equals("xml")) {
+            Class c = dataMap.get(name).getType()[0];
             dataMap.remove(FilenameUtils.removeExtension(f.getName()));
             ObservableList temp = FXCollections.observableArrayList();
             JAXBContext jc;
@@ -205,32 +206,24 @@ public class MainApp extends Application {
                 Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
             }
             dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
-        } catch (ClassNotFoundException e) {
         }
     }
 
     public void saveDataToFile(File file) throws ClassNotFoundException {
         try {
             dataMap.entrySet().forEach((Map.Entry<String, JAXBObservableList> t) -> {
+                File f = new File(file.getAbsolutePath() + System.getProperty("file.separator") + t.getKey() + ".xml");
                 if (t.getValue().getList().size() > 0) {
                     try {
-                        Class c = Class.forName("com.kles.model." + t.getKey());
+                        Class c = dataMap.get(t.getKey()).getType()[0];
                         JAXBContext jc = JAXBContext.newInstance(Wrapper.class, c);
                         Marshaller marshaller = jc.createMarshaller();
-                        File f = new File(file.getAbsolutePath() + System.getProperty("file.separator") + t.getKey() + ".xml");
                         com.kles.jaxb.JAXBUtil.marshalList(marshaller, t.getValue().getList(), t.getKey() + "s", f);
-//                    AbstractWrapper wrapper = new AbstractWrapper();
-//                    wrapper.setData(t.getValue().getList());
-//                    try {
-//                        com.kles.jaxb.JAXBUtil.convertToFile(wrapper, new File(file.getAbsoluteFile() + System.getProperty("file.separator") + t.getKey() + ".xml"), AbstractWrapper.class);
-//                    } catch (JAXBException ex) {
-//                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
                     } catch (JAXBException ex) {
                         Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (f.exists()) {
+                    f.delete();
                 }
             });
             setRegistryFilePath(file);
@@ -239,6 +232,51 @@ public class MainApp extends Application {
         }
     }
 
+//    protected void loadData(File f) throws ClassNotFoundException {
+//        try {
+//            if (isClassNameAvailable("com.kles.model." + FilenameUtils.removeExtension(f.getName()))) {
+//                Class c = Class.forName("com.kles.model." + FilenameUtils.removeExtension(f.getName()));
+//                dataMap.remove(FilenameUtils.removeExtension(f.getName()));
+//                ObservableList temp = FXCollections.observableArrayList();
+//                JAXBContext jc;
+//                List list = null;
+//                try {
+//                    jc = JAXBContext.newInstance(Wrapper.class, c);
+//                    Unmarshaller unMarshaller = jc.createUnmarshaller();
+//                    list = com.kles.jaxb.JAXBUtil.unmarshalList(unMarshaller, c, f.getAbsolutePath());
+//                    if (list != null) {
+//                        temp.addAll(list);
+//                    }
+//                } catch (JAXBException ex) {
+//                    Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
+//            }
+//        } catch (ClassNotFoundException e) {
+//        }
+//    }
+//    public void saveDataToFile(File file) throws ClassNotFoundException {
+//        try {
+//            dataMap.entrySet().forEach((Map.Entry<String, JAXBObservableList> t) -> {
+//                if (t.getValue().getList().size() > 0) {
+//                    try {
+//                        if (isClassNameAvailable("com.kles.model." + t.getKey())) {
+//                            Class c = Class.forName("com.kles.model." + t.getKey());
+//                            JAXBContext jc = JAXBContext.newInstance(Wrapper.class, c);
+//                            Marshaller marshaller = jc.createMarshaller();
+//                            File f = new File(file.getAbsolutePath() + System.getProperty("file.separator") + t.getKey() + ".xml");
+//                            com.kles.jaxb.JAXBUtil.marshalList(marshaller, t.getValue().getList(), t.getKey() + "s", f);
+//                        }
+//                    } catch (JAXBException | ClassNotFoundException ex) {
+//                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//            });
+//            setRegistryFilePath(file);
+//        } catch (Exception e) {
+//            FxUtil.showAlert(Alert.AlertType.ERROR, "Error", "Could not save data to file:\n" + file.getPath(), e.getLocalizedMessage());
+//        }
+//    }
     public boolean showDataModelEditDialog(AbstractDataModel model, ResourceBundle rb) {
         return showDataModelEditDialog(model, primaryStage, rb);
     }
@@ -437,8 +475,6 @@ public class MainApp extends Application {
         this.prefs = prefs;
     }
 
-    
-    
     public LinkedHashMap<String, String> getListSkin() {
         return listSkin;
     }
@@ -461,6 +497,15 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static boolean isClassNameAvailable(String className) {
+        try {
+            Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
     static {
