@@ -14,8 +14,8 @@ import javafx.stage.Stage;
 import org.controlsfx.control.CheckListView;
 import com.kles.MainApp;
 
-public class CheckListViewManageController {
-    
+public class CheckListViewManageController<T extends Object> {
+
     @FXML
     public Label title, label;
     @FXML
@@ -23,34 +23,34 @@ public class CheckListViewManageController {
     @FXML
     public Button bSelect, bUnselect;
     @FXML
-    public CheckListView<String> list;
-    
+    public CheckListView<T> list;
+
     private BooleanProperty isDisable, isLeastOne, isOnControl;
-    private final ObservableList<String> listData = FXCollections.observableArrayList();
-    
+    private final ObservableList<T> listData = FXCollections.observableArrayList();
+
     private MainApp mainApp;
     private Stage stage;
-    
+
     public CheckListViewManageController() {
-        
+
     }
-    
+
     @FXML
     private void initialize() {
         list.setItems(listData);
         isDisable = new SimpleBooleanProperty(true);
         isLeastOne = new SimpleBooleanProperty(false);
         isOnControl = new SimpleBooleanProperty(false);
-        
+
         list.disableProperty().bind(isDisable);
         bSelect.disableProperty().bind(isDisable);
         bUnselect.disableProperty().bind(isDisable);
         indicator.visibleProperty().bind(isOnControl);
-        list.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
+        list.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends T> c) -> {
             isLeastOne.set(!list.getCheckModel().getCheckedIndices().isEmpty());
         });
     }
-    
+
     @FXML
     private void listChecker(ActionEvent e) {
         if (e.getSource().equals(bSelect)) {
@@ -59,80 +59,80 @@ public class CheckListViewManageController {
             unselectAll();
         }
     }
-    
+
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
     }
-    
+
     public Stage getStage() {
         return stage;
     }
-    
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    
+
     public void selectAll() {
         if (list != null) {
             list.getCheckModel().checkAll();
         }
     }
-    
+
     public void unselectAll() {
         if (list != null) {
             list.getCheckModel().clearChecks();
         }
     }
-    
-    public Label getTitle() {
-        return title;
+
+    public String getTitle() {
+        return title.getText();
     }
-    
-    public void setTitle(Label title) {
-        this.title = title;
+
+    public void setTitle(String title) {
+        this.title.setText(title);
     }
-    
-    public Label getLabel() {
-        return label;
+
+    public String getLabel() {
+        return label.getText();
     }
-    
-    public void setLabel(Label label) {
-        this.label = label;
+
+    public void setLabel(String label) {
+        this.label.setText(label);
     }
-    
+
     public ProgressIndicator getIndicator() {
         return indicator;
     }
-    
+
     public void setIndicator(ProgressIndicator indicator) {
         this.indicator = indicator;
     }
-    
-    public CheckListView<String> getList() {
+
+    public CheckListView<T> getList() {
         return list;
     }
-    
-    public void setList(CheckListView<String> list) {
+
+    public void setList(CheckListView<T> list) {
         this.list = list;
     }
-    
+
     public BooleanProperty getIsDisable() {
         return isDisable;
     }
-    
+
     public void setIsDisable(BooleanProperty isDisable) {
         this.isDisable = isDisable;
     }
-    
+
     public BooleanProperty getIsLeastOne() {
         return isLeastOne;
     }
-    
+
     public void setIsLeastOne(BooleanProperty isLeastOne) {
         this.isLeastOne = isLeastOne;
     }
 
-    public ObservableList<String> getListData() {
+    public ObservableList<T> getListData() {
         return listData;
     }
 }

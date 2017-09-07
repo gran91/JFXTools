@@ -59,7 +59,8 @@ public class ComboboxModelAdd extends HBox {
 
     public ComboboxModelAdd() {
         FontAwesomeIconView fAdd = new FontAwesomeIconView(imageAdd);
-        fAdd.setStyle(ResourceCSS.SUCCESS_STYLE);
+//        fAdd.setStyle(ResourceCSS.SUCCESS_STYLE);
+        fAdd.setFill(ResourceCSS.sucessFill());
         fAdd.setSize("15");
         bAdd = new Button("", fAdd);
         this.setSpacing(5.0d);
@@ -149,9 +150,9 @@ public class ComboboxModelAdd extends HBox {
                 popOver.show(this);
             }
         });
-        
+
         controller.isCancelClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                popOver.hide();
+            popOver.hide();
         });
         return popOver;
     }

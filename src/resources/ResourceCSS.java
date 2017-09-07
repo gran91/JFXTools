@@ -1,5 +1,15 @@
 package resources;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.util.ArrayList;
+import java.util.List;
+import static javafx.collections.FXCollections.fill;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -20,4 +30,49 @@ public class ResourceCSS {
 
     public static final String BACKGROUND_TRANSPARENT = "-fx-background-color: rgba(0, 0, 0, 0.1)";
     public static final String BACKGROUND_RADIUS_10 = "-fx-background-radius: 10";
+
+    public static Paint inprogressFill() {
+        List<Stop> listStop = new ArrayList<>();
+        listStop.add(new Stop(0, Color.web("#70B4E5")));
+        listStop.add(new Stop(0.7, Color.web("#247CBC")));
+        listStop.add(new Stop(0.85, Color.web("#2C85C1")));
+        LinearGradient paint = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, listStop);
+        return paint;
+    }
+
+    public static Paint sucessFill() {
+        List<Stop> listStop = new ArrayList<>();
+        listStop.add(new Stop(0, Color.web("#00FF00")));
+        listStop.add(new Stop(0.7, Color.web("#00A900")));
+        listStop.add(new Stop(0.85, Color.web("#008600")));
+        LinearGradient paint = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, listStop);
+        return paint;
+    }
+
+    public static Paint warningFill() {
+        List<Stop> listStop = new ArrayList<>();
+        listStop.add(new Stop(0, Color.web("#FFFFAA")));
+        listStop.add(new Stop(0.7, Color.web("#FFFF00")));
+        listStop.add(new Stop(0.85, Color.web("#AAAA00")));
+        LinearGradient paint = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, listStop);
+        return paint;
+    }
+
+    public static Paint failedFill() {
+        List<Stop> listStop = new ArrayList<>();
+        listStop.add(new Stop(0, Color.web("#990000")));
+        listStop.add(new Stop(0.7, Color.web("#DD0000")));
+        listStop.add(new Stop(0.85, Color.web("#FF0000")));
+        LinearGradient paint = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, listStop);
+        return paint;
+    }
+    
+     public static Paint informationFill() {
+        List<Stop> listStop = new ArrayList<>();
+        listStop.add(new Stop(0, Color.web("#70B4E5")));
+        listStop.add(new Stop(0.7, Color.web("#247CBC")));
+        listStop.add(new Stop(0.85, Color.web("#2C85C1")));
+        LinearGradient paint = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, listStop);
+        return paint;
+    }
 }

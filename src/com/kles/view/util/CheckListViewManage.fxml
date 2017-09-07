@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import org.controlsfx.control.*?>
-<?import de.jensd.fx.glyphs.fontawesome.*?>
-<?import de.jensd.fx.glyphs.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.effect.*?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckListView?>
 
-<VBox fx:id="anchorPane" alignment="CENTER" spacing="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kles.view.util.CheckListViewManageController">
+<VBox fx:id="anchorPane" alignment="CENTER" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kles.view.util.CheckListViewManageController">
    <children>
-      <Label fx:id="title" layoutX="150.0" layoutY="16.0" text="%process.typem3Title" textAlignment="CENTER">
+      <Label fx:id="title" layoutX="150.0" layoutY="16.0" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
       <HBox alignment="CENTER_LEFT" spacing="5.0">
          <children>
-            <Label fx:id="label" layoutX="14.0" layoutY="66.0" text="%process.typem3" />
+            <Label fx:id="label" layoutX="14.0" layoutY="66.0" />
             <ProgressIndicator fx:id="indicator" prefHeight="31.0" prefWidth="37.0" />
          </children>
          <VBox.margin>

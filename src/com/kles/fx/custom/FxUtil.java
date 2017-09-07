@@ -27,8 +27,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import com.kles.view.util.ProgressDialogController;
+import java.util.Optional;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
+import javafx.stage.Window;
 import resources.Resource;
 
 /**
@@ -38,17 +41,23 @@ import resources.Resource;
 public class FxUtil {
 
     public enum AutoCompleteMode {
-
         STARTS_WITH, CONTAINING,;
     }
 
     public static Stage showInDialog(Node node, String title) {
+        return showInDialog(null, node, title);
+    }
+
+    public static Stage showInDialog(Window owner, Node node, String title) {
         Stage dialogStage = new Stage();
         dialogStage.setTitle(title);
         dialogStage.initModality(Modality.WINDOW_MODAL);
+        if (owner != null) {
+            dialogStage.initOwner(owner);
+        }
         dialogStage.getIcons().add(Resource.LOGO_ICON_32);
         StackPane stack = new StackPane(node);
-        Scene scene = new Scene(stack,Color.TRANSPARENT);
+        Scene scene = new Scene(stack, Color.TRANSPARENT);
         scene.getStylesheets().add(MainApp.class.getResource("application.css").toExternalForm());
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
@@ -166,11 +175,11 @@ public class FxUtil {
         }));
     }
 
-    public static void showAlert(Alert.AlertType type, String title, String header, String message) {
-        showAlert(null, type, title, header, message);
+    public static Optional<ButtonType> showAlert(Alert.AlertType type, String title, String header, String message) {
+        return showAlert(null, type, title, header, message);
     }
 
-    public static void showAlert(Alert alert, Alert.AlertType type, String title, String header, String message) {
+    public static Optional<ButtonType> showAlert(Alert alert, Alert.AlertType type, String title, String header, String message) {
         if (alert == null) {
             alert = new Alert(type);
         } else {
@@ -180,14 +189,14 @@ public class FxUtil {
         alert.setHeaderText(header);
         alert.setContentText(message);
 
-        alert.showAndWait();
+        return alert.showAndWait();
     }
 
-    public static void showAlert(Alert.AlertType type, String title, String header, String message, Exception ex) {
-        showAlert(null, type, title, header, message, ex);
+    public static Optional<ButtonType> showAlert(Alert.AlertType type, String title, String header, String message, Exception ex) {
+        return showAlert(null, type, title, header, message, ex);
     }
 
-    public static void showAlert(Alert alert, Alert.AlertType type, String title, String header, String message, Exception ex) {
+    public static Optional<ButtonType> showAlert(Alert alert, Alert.AlertType type, String title, String header, String message, Exception ex) {
         if (alert == null) {
             alert = new Alert(type);
         } else {
@@ -220,7 +229,7 @@ public class FxUtil {
 
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
-        alert.showAndWait();
+        return alert.showAndWait();
     }
 
     public static ProgressDialogController showProgressDialog(Stage primaryStage) {

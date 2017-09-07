@@ -28,7 +28,7 @@ public class ComboboxModelAddDisplay extends ComboboxModelAdd {
 
     //Image imageDisplay = new Image(getClass().getResourceAsStream("/resources/images/info.png"));
     FontAwesomeIcon imageDisplay = FontAwesomeIcon.EDIT;
-
+    
     @FXML
     private Button bDisplay;// = new Button("", new ImageView(imageDisplay));
 
@@ -36,11 +36,12 @@ public class ComboboxModelAddDisplay extends ComboboxModelAdd {
         super();
         FontAwesomeIconView fInfo = new FontAwesomeIconView(imageDisplay);
         fInfo.setSize("15");
-        fInfo.setStyle(ResourceCSS.INFORMATION_STYLE);
+//        fInfo.setStyle(ResourceCSS.INFORMATION_STYLE);
+        fInfo.setFill(ResourceCSS.informationFill());
         bDisplay = new Button("", fInfo);
         this.getChildren().add(bDisplay);
     }
-
+    
     public ComboboxModelAddDisplay(MainApp main, ObservableList l, AbstractDataModel m) {
         super(main, l, m);
         FontAwesomeIconView fInfo = new FontAwesomeIconView(imageAdd);
@@ -48,14 +49,14 @@ public class ComboboxModelAddDisplay extends ComboboxModelAdd {
         bDisplay = new Button("", fInfo);
         this.getChildren().add(bDisplay);
     }
-
+    
     public void init(ResourceBundle rb) {
         super.init(rb);
         bDisplay.setOnAction((ActionEvent event) -> {
             displayModel();
         });
     }
-
+    
     public void displayModel() {
         try {
             if (popOver != null && popOver.isShowing()) {
@@ -79,6 +80,6 @@ public class ComboboxModelAddDisplay extends ComboboxModelAdd {
         } catch (IOException ex) {
             Logger.getLogger(ComboboxModelAddDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
 }

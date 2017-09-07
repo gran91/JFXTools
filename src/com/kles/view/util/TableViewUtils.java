@@ -14,8 +14,6 @@ import javafx.scene.input.MouseEvent;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
@@ -25,6 +23,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class TableViewUtils {
+
+    public static String[] listColumns(TableView table) {
+        String[] header = new String[table.getColumns().size()];
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            header[i] = ((TableColumn) table.getColumns().get(i)).getText();
+        }
+        return header;
+    }
 
     public static void addCustomTableMenu(TableView tableView) {
         tableView.setTableMenuButtonVisible(true);
