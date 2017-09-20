@@ -13,9 +13,12 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import org.controlsfx.control.CheckListView;
 import com.kles.MainApp;
+import javafx.scene.layout.VBox;
 
 public class CheckListViewManageController<T extends Object> {
 
+    @FXML
+    public VBox root;
     @FXML
     public Label title, label;
     @FXML
@@ -134,5 +137,9 @@ public class CheckListViewManageController<T extends Object> {
 
     public ObservableList<T> getListData() {
         return listData;
+    }
+
+    public VBox getRoot() {
+        return root;
     }
 }
