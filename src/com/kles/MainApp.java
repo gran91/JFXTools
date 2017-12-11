@@ -37,6 +37,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -150,7 +151,7 @@ public class MainApp extends Application {
         if (filePath != null) {
             return new File(filePath);
         } else {
-            Path p = Paths.get(System.getProperty("user.dir") + System.getProperty("file.separator") + ResourceApp.TITLE + System.getProperty("file.separator") + "data");
+            Path p = Paths.get(System.getProperty("user.home") + System.getProperty("file.separator") + ResourceApp.TITLE + System.getProperty("file.separator") + "data");
             System.out.println(p.toFile().getAbsolutePath());
             if (p.toFile().exists() && p.toFile().isDirectory()) {
 
@@ -183,7 +184,7 @@ public class MainApp extends Application {
             }
             setRegistryFilePath(directory);
         } catch (Exception e) {
-            FxUtil.showAlert(Alert.AlertType.ERROR, "Error", "Could not load data from file:\n" + directory.getPath(), e.getLocalizedMessage());
+            FxUtil.showAlert(Alert.AlertType.ERROR, resourceMessage.getString("main.error"), String.format(resourceMessage.getString("main.file.load.error"), directory.getPath()), e.getLocalizedMessage());
         }
     }
 
@@ -191,8 +192,8 @@ public class MainApp extends Application {
         final String name = FilenameUtils.removeExtension(f.getName());
         if (dataMap.containsKey(name) && FilenameUtils.getExtension(f.getName()).equals("xml")) {
             Class c = dataMap.get(name).getType()[0];
-            dataMap.remove(FilenameUtils.removeExtension(f.getName()));
-            ObservableList temp = FXCollections.observableArrayList();
+//            dataMap.remove(FilenameUtils.removeExtension(f.getName()));
+//            ObservableList temp = FXCollections.observableArrayList();
             JAXBContext jc;
             List list = null;
             try {
@@ -200,18 +201,30 @@ public class MainApp extends Application {
                 Unmarshaller unMarshaller = jc.createUnmarshaller();
                 list = com.kles.jaxb.JAXBUtil.unmarshalList(unMarshaller, c, f.getAbsolutePath());
                 if (list != null) {
-                    temp.addAll(list);
+                    dataMap.get(name).getList().addAll(list);
                 }
             } catch (JAXBException ex) {
                 Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
             }
-            dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
+//            dataMap.put(FilenameUtils.removeExtension(f.getName()), new JAXBObservableList(temp, c));
+        }
+    }
+
+    public void saveAs() {
+        DirectoryChooser fileChooser = new DirectoryChooser();
+        File file = fileChooser.showDialog(primaryStage);
+        if (file != null) {
+            try {
+                saveDataToFile(file);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     public void saveDataToFile(File file) throws ClassNotFoundException {
         try {
-            dataMap.entrySet().forEach((Map.Entry<String, JAXBObservableList> t) -> {
+            for (Map.Entry<String, JAXBObservableList> t : dataMap.entrySet()) {
                 File f = new File(file.getAbsolutePath() + System.getProperty("file.separator") + t.getKey() + ".xml");
                 if (t.getValue().getList().size() > 0) {
                     try {
@@ -220,15 +233,18 @@ public class MainApp extends Application {
                         Marshaller marshaller = jc.createMarshaller();
                         com.kles.jaxb.JAXBUtil.marshalList(marshaller, t.getValue().getList(), t.getKey() + "s", f);
                     } catch (JAXBException ex) {
-                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                        FxUtil.showAlert(Alert.AlertType.ERROR, resourceMessage.getString("main.error"), String.format(resourceMessage.getString("main.file.save.error"), f.getPath()), ex.getLocalizedMessage(), ex);
+                        saveAs();
+                        return;
                     }
                 } else if (f.exists()) {
                     f.delete();
                 }
-            });
+            }
             setRegistryFilePath(file);
         } catch (Exception e) {
-            FxUtil.showAlert(Alert.AlertType.ERROR, "Error", "Could not save data to file:\n" + file.getPath(), e.getLocalizedMessage());
+            FxUtil.showAlert(Alert.AlertType.ERROR, resourceMessage.getString("main.error"), String.format(resourceMessage.getString("main.file.save.error"), file.getPath()), e.getLocalizedMessage(), e);
+            saveAs();
         }
     }
 

@@ -23,6 +23,7 @@ import javafx.css.PseudoClass;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 
 /**
@@ -42,28 +43,28 @@ public class TextFieldValidator {
     public static final Pattern positiveNumberPattern = Pattern.compile("^[1-9]\\d*(\\.\\d+)?$");
     public static final Pattern positiveNumberWithZeroPattern = Pattern.compile("^[0-9]\\d*(\\.\\d+)?$");
 
-    public static BooleanBinding emptyTextFieldBindingOrOther(TextField textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
+    public static BooleanBinding emptyTextFieldBindingOrOther(TextInputControl textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
         BooleanBinding binding = Bindings.createBooleanBinding(()
                 -> textField.getText().trim().isEmpty(), textField.textProperty());
         configureTextFieldBinding(binding, textField, message, messages, other);
         return binding.and(other.not());
     }
 
-    public static BooleanBinding emptyTextFieldBindingAndOther(TextField textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
+    public static BooleanBinding emptyTextFieldBindingAndOther(TextInputControl textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
         BooleanBinding binding = Bindings.createBooleanBinding(()
                 -> textField.getText().trim().isEmpty(), textField.textProperty());
         configureTextFieldBinding(binding, textField, message, messages, other);
         return binding.and(other.not());
     }
 
-    public static BooleanBinding isEquals(TextField textField1, TextField textField2, String message, Map<BooleanBinding, String> messages) {
+    public static BooleanBinding isEquals(TextInputControl textField1, TextField textField2, String message, Map<BooleanBinding, String> messages) {
         BooleanBinding binding = Bindings.createBooleanBinding(()
                 -> !textField1.getText().equals(textField2.getText()), textField1.textProperty());
         configureTextFieldBinding(binding, textField1, message, messages);
         return binding;
     }
 
-    public static BooleanBinding emptyTextFieldBinding(TextField textField, String message, Map<BooleanBinding, String> messages) {
+    public static BooleanBinding emptyTextFieldBinding(TextInputControl textField, String message, Map<BooleanBinding, String> messages) {
         BooleanBinding binding = Bindings.createBooleanBinding(()
                 -> textField.getText().trim().isEmpty(), textField.textProperty());
         configureTextFieldBinding(binding, textField, message, messages);
@@ -77,7 +78,7 @@ public class TextFieldValidator {
         return binding;
     }
 
-    public static void configureTextFieldBinding(BooleanBinding binding, TextField textField, String message, Map<BooleanBinding, String> messages) {
+    public static void configureTextFieldBinding(BooleanBinding binding, TextInputControl textField, String message, Map<BooleanBinding, String> messages) {
         messages.put(binding, message);
         if (textField.getTooltip() == null) {
             textField.setTooltip(new Tooltip());
@@ -89,7 +90,7 @@ public class TextFieldValidator {
         updateTextFieldValidationStatus(textField, tooltipText, binding.get(), message);
     }
 
-    public static void configureTextFieldBinding(BooleanBinding binding, TextField textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
+    public static void configureTextFieldBinding(BooleanBinding binding, TextInputControl textField, String message, Map<BooleanBinding, String> messages, BooleanBinding other) {
         messages.put(binding.and(other), message);
         if (textField.getTooltip() == null) {
             textField.setTooltip(new Tooltip());
@@ -114,7 +115,7 @@ public class TextFieldValidator {
                 -> Arrays.stream(bindings).filter(BooleanBinding::get).collect(Collectors.counting()), bindings);
     }
 
-    public static void updateTextFieldValidationStatus(TextField textField, String defaultTooltipText, boolean invalid, String message) {
+    public static void updateTextFieldValidationStatus(TextInputControl textField, String defaultTooltipText, boolean invalid, String message) {
         textField.pseudoClassStateChanged(PseudoClass.getPseudoClass("validation-error"), invalid);
         String tooltipText;
         if (invalid) {

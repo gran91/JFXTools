@@ -6,6 +6,9 @@
 package com.kles.view.util;
 
 import java.io.File;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,6 +28,7 @@ public class FilePathChooser extends HBox {
     private TextField pathField = new TextField();
     @FXML
     private Button buttonPath = new Button("...");
+    private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private Stage dialogStage;
     private int type = 0;
     private String title = "";
@@ -36,6 +40,15 @@ public class FilePathChooser extends HBox {
         this.getChildren().add(pathField);
         this.getChildren().add(buttonPath);
         buttonPath.setOnAction(e -> chooseFile(e));
+        pathField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (file.get() != null) {
+                if (!newValue.equals(file.get().getAbsolutePath())) {
+                    file.set(new File(newValue));
+                }
+            } else {
+                file.set(new File(newValue));
+            }
+        });
     }
 
     public FilePathChooser() {
@@ -55,6 +68,7 @@ public class FilePathChooser extends HBox {
         }
         File selectedDirectory = chooser.showDialog(dialogStage);
         if (selectedDirectory != null) {
+            file.set(selectedDirectory);
             pathField.setText(selectedDirectory.getPath());
         }
 
@@ -108,7 +122,11 @@ public class FilePathChooser extends HBox {
         return pathField.getText();
     }
 
+    public ObjectProperty<File> getFileProperty() {
+        return file;
+    }
+
     public File getFile() {
-        return new File(pathField.getText());
+        return file.get();
     }
 }

@@ -5,6 +5,9 @@
 .text-field:validation-error {
 	-fx-background-color: error-color ;
 }
+.text-area:validation-error {
+	-fx-background-color: error-color ;
+}
 .label.error-instructions {
 	-fx-text-fill: error-color ;
 }

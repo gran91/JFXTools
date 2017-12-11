@@ -8,6 +8,7 @@ package com.kles.fx.custom;
 import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -16,65 +17,84 @@ import javafx.scene.input.KeyEvent;
  */
 public class InputConstraints {
 
-    public static void noLeadingAndTrailingBlanks(final TextField textField) {
+    public static int UPPER_LOWER = 0;
+    public static int UPPER = 1;
+    public static int LOWER = 2;
+
+    public static String LETTER_ONLY = "[A-Za-z]";
+    public static String NUMBER_ONLY = "[0-9.]";
+    public static String NUMBER_LETTER_ONLY = "[A-Za-z0-9.]";
+
+    public static void noLeadingAndTrailingBlanks(final TextInputControl textField) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createNoLeadingBlanksInputHandler());
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
         });
     }
 
-    public static void noLeadingBlanks(final TextField textField) {
+    public static void noLeadingBlanks(final TextInputControl textField) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createNoLeadingBlanksInputHandler());
     }
 
-    public static void noBlanks(final TextField textField) {
+    public static void noBlanks(final TextInputControl textField) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createNoBlanksInputHandler());
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
         });
     }
 
-    public static void numbersOnly(final TextField textField) {
+    public static void numbersOnly(final TextInputControl textField) {
         numbersOnly(textField, Integer.MAX_VALUE);
     }
 
-    public static void numbersOnly(final TextField textField, final Integer maxLenth) {
+    public static void numbersOnly(final TextInputControl textField, final Integer maxLenth) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createNumbersOnlyInputHandler(maxLenth));
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
         });
     }
 
-    public static void decimalOnly(final TextField textField, final Integer maxDecimal) {
+    public static void decimalOnly(final TextInputControl textField, final Integer maxDecimal) {
         decimalOnly(textField, Integer.MAX_VALUE, maxDecimal);
     }
 
-    public static void decimalOnly(final TextField textField, final Integer minDecimal, final Integer maxDecimal) {
+    public static void decimalOnly(final TextInputControl textField, final Integer minDecimal, final Integer maxDecimal) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createDecimalInputHandler(minDecimal, maxDecimal));
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
         });
     }
 
-    public static void maxLength(final TextField textField, final Integer maxLenth) {
+    public static void maxLength(final TextInputControl textField, final Integer maxLenth) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createMaxLengthInputHandler(maxLenth));
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
         });
     }
 
-    public static void lettersOnly(final TextField textField) {
+    public static void lettersOnly(final TextInputControl textField) {
         lettersOnly(textField, Integer.MAX_VALUE);
     }
 
-    public static void lettersOnly(final TextField textField, final Integer maxLenth) {
-        textField.addEventFilter(KeyEvent.KEY_TYPED, createLettersOnlyInputHandler(maxLenth));
+    public static void lettersOnly(final TextInputControl textField, final Integer maxLenth) {
+        lettersOnly(textField, maxLenth, UPPER_LOWER);
+    }
+
+    public static void lettersOnly(final TextInputControl textField, final Integer maxLenth, int type) {
+        textField.addEventFilter(KeyEvent.KEY_TYPED, createLettersOnlyInputHandler(maxLenth, type));
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
         });
     }
 
-    public static void checkPattern(final TextField textField, final String pattern) {
+    public static void lettersNumbersOnly(final TextInputControl textField, final Integer maxLenth, int type) {
+        textField.addEventFilter(KeyEvent.KEY_TYPED, createNumberLettersOnlyInputHandler(maxLenth, type));
+        textField.focusedProperty().addListener((Observable observable) -> {
+            textField.setText(textField.getText().trim());
+        });
+    }
+
+    public static void checkPattern(final TextInputControl textField, final String pattern) {
         textField.addEventFilter(KeyEvent.KEY_TYPED, createPatternInputHandler(pattern));
         textField.focusedProperty().addListener((Observable observable) -> {
             textField.setText(textField.getText().trim());
@@ -93,11 +113,15 @@ public class InputConstraints {
     }
 
     public static EventHandler<KeyEvent> createNumbersOnlyInputHandler(final Integer maxLength) {
-        return createPatternInputHandler(maxLength, "[0-9.]");
+        return createPatternInputHandler(maxLength, NUMBER_ONLY, 0);
     }
 
-    public static EventHandler<KeyEvent> createLettersOnlyInputHandler(final Integer maxLength) {
-        return createPatternInputHandler(maxLength, "[A-Za-z]");
+    public static EventHandler<KeyEvent> createLettersOnlyInputHandler(final Integer maxLength, int type) {
+        return createPatternInputHandler(maxLength, LETTER_ONLY, type);
+    }
+
+    public static EventHandler<KeyEvent> createNumberLettersOnlyInputHandler(final Integer maxLength, int type) {
+        return createPatternInputHandler(maxLength, NUMBER_LETTER_ONLY, type);
     }
 
     public static EventHandler<KeyEvent> createNoBlanksInputHandler() {
@@ -132,12 +156,25 @@ public class InputConstraints {
         };
     }
 
-    public static EventHandler<KeyEvent> createPatternInputHandler(final Integer maxLength, String pattern) {
+    public static EventHandler<KeyEvent> createPatternInputHandler(final Integer maxLength, String pattern, int type) {
         return (KeyEvent event) -> {
             if (event.getSource() instanceof TextField) {
                 TextField textField = (TextField) event.getSource();
                 if (textField.getText().length() >= maxLength || !event.getCharacter().matches(pattern)) {
                     event.consume();
+                } else {
+                    if (pattern.equals(LETTER_ONLY) || pattern.equals(NUMBER_LETTER_ONLY)) {
+                        switch (type) {
+                            case 1:
+                                textField.setText(textField.getText().toUpperCase() + event.getCharacter().toUpperCase());
+                                break;
+                            case 2:
+                                textField.setText(textField.getText().toLowerCase() + event.getCharacter().toLowerCase());
+                                break;
+                        }
+                        textField.positionCaret(textField.getText().length());
+                        event.consume();
+                    }
                 }
             }
         };
