@@ -56,6 +56,7 @@ public class ComboboxModelAdd extends HBox {
     protected double prefWidth = 265;
     protected double minWidth = 265;
     protected double maxWidth = Double.MAX_VALUE;
+    protected String viewpath = "";
 
     public ComboboxModelAdd() {
         FontAwesomeIconView fAdd = new FontAwesomeIconView(imageAdd);
@@ -138,7 +139,12 @@ public class ComboboxModelAdd extends HBox {
         popOver.setDetachable(true);
         popOver.setDetached(false);
         popOver.setArrowSize(10);
-        AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model, this.getScene().getWindow(), mainApp.getResourceBundle());
+        if (!viewpath.isEmpty()) {
+            viewpath = "view/" + model.datamodelName() + "EditDialog.fxml";
+        }
+
+        AbstractDataModelEditController controller = mainApp.showDataModelEditDialogStage(model, viewpath, this.getScene().getWindow(), mainApp.getResourceBundle());
+
         popOver.setContentNode(controller.getDialogStage().getScene().getRoot());
         controller.isOkClickedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue && !controller.hasError()) {
@@ -198,5 +204,9 @@ public class ComboboxModelAdd extends HBox {
 
     public void setValue(AbstractDataModel m) {
         listModel.setValue(m);
+    }
+
+    public void setViewPath(String viewpath) {
+        this.viewpath = viewpath;
     }
 }

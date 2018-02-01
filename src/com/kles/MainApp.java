@@ -366,11 +366,11 @@ public class MainApp extends Application {
         return showDataModelEditDialogStage(model, parent, MainApp.resourceMessage);
     }
 
-    public AbstractDataModelEditController showDataModelEditDialogStage(AbstractDataModel model, Window parent, ResourceBundle rb) {
+    public AbstractDataModelEditController showDataModelEditDialogStage(AbstractDataModel model, String viewPath, Window parent, ResourceBundle rb) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setResources(rb);
-            loader.setLocation(MainApp.class.getResource("view/" + model.datamodelName() + "EditDialog.fxml"));
+            loader.setLocation(MainApp.class.getResource(viewPath));
             Pane page = loader.load();
 
             Stage dialogStage = new Stage();
@@ -406,6 +406,10 @@ public class MainApp extends Application {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public AbstractDataModelEditController showDataModelEditDialogStage(AbstractDataModel model, Window parent, ResourceBundle rb) {
+        return showDataModelEditDialogStage(model, "view/" + model.datamodelName() + "EditDialog.fxml", parent, rb);
     }
 
     public void showModelManagerTableView(String datamodel) {
