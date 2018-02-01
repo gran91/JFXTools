@@ -139,7 +139,7 @@ public class ComboboxModelAdd extends HBox {
         popOver.setDetachable(true);
         popOver.setDetached(false);
         popOver.setArrowSize(10);
-        if (!viewpath.isEmpty()) {
+        if (viewpath.isEmpty()) {
             viewpath = "view/" + model.datamodelName() + "EditDialog.fxml";
         }
 
