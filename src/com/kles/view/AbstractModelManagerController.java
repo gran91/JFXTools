@@ -141,6 +141,14 @@ public abstract class AbstractModelManagerController implements IModelManagerVie
         this.parentmodel = parentmodel;
     }
 
+    public AbstractDataModel getDataModel() {
+        return datamodel;
+    }
+
+    public void setDataModel(AbstractDataModel model) {
+        this.datamodel = model;
+    }
+
     public ResourceBundle getResourseMessage() {
         return resourseMessage;
     }
